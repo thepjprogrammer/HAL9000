@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="HAL" basedir="." default="default">
+  	<property name="srcDir"      value="${basedir}/src"/>
+  	<property name="deployDir"   value="${basedir}/WebContent"/>
+	<property name="appContainer" value="/usr/local/apache-tomcat-8.0.20/" />
+  	
+    <target name="default" depends="compile,buildwar,deploy"></target>
+	  
+	<path id="compile.classpath">
+	    <fileset dir="${appContainer}/bin">
+	      <include name="*.jar"/>
+	    </fileset>
+	    <pathelement location="${appContainer}/lib"/>
+	    <fileset dir="${appContainer}/lib">
+	      <include name="*.jar"/>
+	    </fileset>
+	</path>
+	
+	
+    <target name="compile">
+	   	<javac srcdir="${srcDir}"
+	          destdir="${deployDir}/WEB-INF/classes">
+	        <classpath refid="compile.classpath"/>
+	    </javac>
+	    <!--<copy todir="${deployDir}/WEB-INF/classes">
+	      <fileset dir="${srcDir}" excludes="**/*.java"/>
+	    </copy>-->
+    </target>
+    <target name="buildwar" depends="compile">
+        <war basedir="WebContent" destfile="HAL.war" webxml="WebContent/WEB-INF/web.xml">
+            <exclude name="WEB-INF/**" />
+            <webinf dir="WebContent/WEB-INF/lib">
+                <include name="**/*.jar" />
+            </webinf>
+            <webinf dir="WebContent/WEB-INF/classes">
+                <include name="**/*.class" />
+            </webinf>
+        </war>
+    </target>
+    <target name="deploy">
+        <copy file="HAL.war" todir="." />
+    </target>
+</project>
